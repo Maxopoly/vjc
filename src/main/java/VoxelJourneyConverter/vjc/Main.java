@@ -64,7 +64,6 @@ public class Main {
 		case "Convert Voxelmap data into Journeymap data":
 			VoxelToJourneyConverter vtjc = new VoxelToJourneyConverter();
 			File sourcefile = null;
-			File destinationfile = null;
 			chooser = new JFileChooser();
 			chooser.setDialogTitle("Please choose the folder containing your Voxel data");
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -88,7 +87,7 @@ public class Main {
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			returnValue = chooser.showOpenDialog(null);
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				sourcefile = chooser.getSelectedFile();
+				sourcefolder = chooser.getSelectedFile();
 			}
 			if (vmm.merge(sourcefolder)) {
 				// TODO success window
