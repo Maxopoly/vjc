@@ -89,13 +89,10 @@ public class Main {
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				sourcefolder = chooser.getSelectedFile();
 			}
-			if (vmm.merge(sourcefolder)) {
+			vmm.merge(sourcefolder);
 				// TODO success window
 				System.exit(0);
-			} else {
-				// TODO tell them something broke
-				System.exit(1);
-			}
+			
 			break;
 		case "Convert Journeymap data into Voxelmap data":
 			JourneyToVoxelConverter jtvc = new JourneyToVoxelConverter();
