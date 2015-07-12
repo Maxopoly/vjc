@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Every folder, which is merged into another folder is turned into an instance
@@ -46,9 +47,17 @@ public class Data {
 		}
 	}
 public void writeLogfile() {
+	PrintWriter writer=null;
+	try {
+		writer = new PrintWriter(logfile);
+		}
+		catch (FileNotFoundException e) {
+			System.out.println("Error occured while trying to create an updatelog");
+			System.exit(1);
+		}
 	for(int i=0;i<logdata[0].length;i++) {
 		for(int j=0;j<logdata.length;j++) {
-			logdata[j][i] //TODO finish
+			writer.println(i+","+j+":"+logdata[i][j]);
 		}
 	}
 }

@@ -7,20 +7,20 @@ import java.util.LinkedList;
 
 public class VoxelMapMerger {
 	int mapradius = 15360; // because you can still map data outside worldborder
-	int chunks = mapradius / 16*2;
+	int chunks = mapradius / 16 * 2;
 	Logger logger;
 
 	public void merge(File sourceFolder) {
 		logger = new Logger(sourceFolder);
-		LinkedList<File> subfolders = Utilities.getSubFolders(sourceFolder); 
+		LinkedList<File> subfolders = Utilities.getSubFolders(sourceFolder);
 		if (subfolders.size() <= 1) {
 			logger.logWarning("None or only one folder was found, this data can't be merged");
 			System.exit(1);
 		}
-		(new File(sourceFolder.getAbsolutePath()
-				+ "/combinedMapData")).mkdirs();
-		if (!new File(sourceFolder.getAbsolutePath()
-				+ "/combinedMapData").exists()) {
+		(new File(sourceFolder.getAbsolutePath() + "/combinedMapData"))
+				.mkdirs();
+		if (!new File(sourceFolder.getAbsolutePath() + "/combinedMapData")
+				.exists()) {
 			logger.logWarning("The destination folder for the combined data could not be created");
 			System.exit(1);
 		}
@@ -56,7 +56,8 @@ public class VoxelMapMerger {
 					for (int a = 0; a < 256; a++) {
 						int x = a % 16;
 						int y = a / 16;
-						System.out.println(x+","+y+","+xoffset+","+yoffset);  //TODO REMOVE
+						System.out.println(x + "," + y + "," + xoffset + ","
+								+ yoffset); // TODO REMOVE
 						long time = current.getTimestamp(x + xoffset, y
 								+ yoffset);
 						target.updateTimestamp(x + xoffset, y + yoffset, time);
@@ -74,7 +75,8 @@ public class VoxelMapMerger {
 					for (int a = 0; a < 256; a++) {
 						int x = a % 16;
 						int y = a / 16;
-						System.out.println(x+","+y+","+xoffset+","+yoffset);  //TODO REMOVE
+						System.out.println(x + "," + y + "," + xoffset + ","
+								+ yoffset); // TODO REMOVE
 						long timetarget = target.getTimestamp(x + xoffset, y
 								+ yoffset);
 						long timecurrent = current.getTimestamp(x + xoffset, y
@@ -82,13 +84,12 @@ public class VoxelMapMerger {
 						if (timecurrent > timetarget) {
 							target.updateTimestamp(x + xoffset, y + yoffset,
 									timecurrent);
-							/*logger.log("Replaced the chunk "
-									+ a
-									+ " in "
-									+ zip.getName()
-									+ " , because it was newer, Previous timestamp:"
-									+ timetarget + " , New timestamp:"
-									+ timecurrent); */
+							/*
+							 * logger.log("Replaced the chunk " + a + " in " +
+							 * zip.getName() +
+							 * " , because it was newer, Previous timestamp:" +
+							 * timetarget + " , New timestamp:" + timecurrent);
+							 */
 							copyChunk(a, currentData, mergedData);
 						}
 					}
@@ -101,8 +102,9 @@ public class VoxelMapMerger {
 							+ zip.getName() + " back into a file");
 					System.exit(1);
 				}
-				if (targetzip==null) {
-					targetzip=new File(destinationFolder.getAbsolutePath()+"/"+current.getZip(j).getName());
+				if (targetzip == null) {
+					targetzip = new File(destinationFolder.getAbsolutePath()
+							+ "/" + current.getZip(j).getName());
 				}
 				try {
 					Utilities.createZip(data, targetzip);
@@ -117,22 +119,25 @@ public class VoxelMapMerger {
 		logger.closeLogger();
 	}
 
-	public void copyChunk(int i, byte[] sourcedata, byte[] targetdata) {
-		int x=i%16;
-		int y=i/16;
-		int start=x*16*17+y*16*256*17;
-		if (sourcedata[start+2]!=0) {
-			
-				for(int b=start;b<start+256*16*17;b+=256*17) {
-					for(int a=b;a<b+16*17;a++) {
-					targetdata[a]=sourcedata[a];
+	public void copyChunk(int c, byte[] sourcedata, byte[] targetdata) {
+		if ((c / 16) * 16 * (256 * 17) + (c % 16) * 16 * 17 != 0) {
+			for (int cy = 0; cy < 16; cy++) {
+				// x
+				for (int cx = 0; cx < 16; cx++) {
+					// get block at that xy
+					for (int x = 0; x < 17; x++) {
+						int btr = ((c / 16) * 16 * (256 * 17))
+								+ (cy * (17 * 16)) + (cx * 17) + (c % 16) * 16
+								* 17;
+						// int btw = cy * (16*17) + x;
+
+						targetdata[btr] = sourcedata[btr];
+					}
+
 				}
-				
-				
-	
 			}
+
 		}
 
 	}
-
 }
