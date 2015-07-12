@@ -90,7 +90,7 @@ public class Main {
 				sourcefolder = chooser.getSelectedFile();
 			}
 			vmm.merge(sourcefolder);
-				// TODO success window
+				System.out.println("Success");
 				System.exit(0);
 			
 			break;
