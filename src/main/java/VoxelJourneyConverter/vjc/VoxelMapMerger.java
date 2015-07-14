@@ -8,26 +8,24 @@ import java.util.LinkedList;
 public class VoxelMapMerger {
 	int mapradius = 15360; // because you can still map data outside worldborder
 	int chunks = mapradius / 16 * 2;
-	Logger logger;
 
 	public void merge(File sourceFolder) {
-		logger = new Logger(sourceFolder);
 		LinkedList<File> subfolders = Utilities.getSubFolders(sourceFolder);
 		if (subfolders.size() <= 1) {
-			logger.logWarning("None or only one folder was found, this data can't be merged");
+			System.out.println("None or only one folder was found, this data can't be merged");
 			System.exit(1);
 		}
 		(new File(sourceFolder.getAbsolutePath() + "/combinedMapData"))
 				.mkdirs();
 		if (!new File(sourceFolder.getAbsolutePath() + "/combinedMapData")
 				.exists()) {
-			logger.logWarning("The destination folder for the combined data could not be created");
+			System.out.println("The destination folder for the combined data could not be created");
 			System.exit(1);
 		}
 		File destinationFolder = new File(sourceFolder.getAbsolutePath()
 				+ "/combinedMapData");
 		Data target = new Data(destinationFolder, chunks);
-		logger.log("Starting to merge data");
+		System.out.println("Starting to merge data");
 		for (int i = 0; i < subfolders.size(); i++) {
 			Data current = new Data(subfolders.get(i), chunks);
 			// current.writeLogfile();
@@ -38,7 +36,7 @@ public class VoxelMapMerger {
 					try {
 						currentData = Utilities.dezipFileToByteArray(zip);
 					} catch (IOException e) {
-						logger.logWarning("The zip"
+						System.out.println("The zip"
 								+ zip.getAbsolutePath()
 								+ "could not be parsed, it seems to be corrupted");
 						e.printStackTrace();
@@ -104,9 +102,10 @@ public class VoxelMapMerger {
 							mergedData = Utilities.dezipFileToByteArray(target
 									.getZip(xoffset / 16, yoffset / 16));
 						} catch (IOException e) {
-							logger.logWarning("Error, while trying to unzip"
+							System.out.println("Error, while trying to unzip"
 									+ target.getZip(xoffset / 16, yoffset / 16)
 											.getAbsolutePath());
+							e.printStackTrace();
 						}
 						for (int a = 0; a < 256; a++) {
 							int x = a % 16;
@@ -138,8 +137,9 @@ public class VoxelMapMerger {
 						data = Utilities.createFileFromByteArray(mergedData,
 								data);
 					} catch (IOException e) {
-						logger.logWarning("Error while trying to write the data for "
+						System.out.println("Error while trying to write the data for "
 								+ zip.getName() + " back into a file");
+						e.printStackTrace();
 						System.exit(1);
 					}
 					if (targetzip == null) {
@@ -150,15 +150,15 @@ public class VoxelMapMerger {
 					try {
 						Utilities.createZip(data, targetzip);
 					} catch (IOException e) {
-						logger.logWarning("Error while trying to zip the file for "
+						System.out.println("Error while trying to zip the file for "
 								+ zip.getName());
+						e.printStackTrace();
 						System.exit(1);
 					}
 					
 				}
 			}
 		}
-		logger.closeLogger();
 		target.writeLogfile();
 	}
 

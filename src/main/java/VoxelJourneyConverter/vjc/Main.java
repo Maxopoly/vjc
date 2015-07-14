@@ -1,7 +1,9 @@
 package VoxelJourneyConverter.vjc;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -27,16 +29,19 @@ public class Main {
 	public static void setupGUI() {
 		
 		// yes this looks horrible, but it's just supposed to work at this point, not to look pretty
-		frame = new JFrame("Pop-Art-Collage");
+		Font bigFont=new Font("big",Font.BOLD,25);
+		frame = new JFrame("Mapdataconverter");
 		frame.setSize(600, 300);
 		panel = new JPanel();
 		panel.setLayout(new FlowLayout());
 		info = new JLabel("What do you want to do?");
 		info.setPreferredSize(new Dimension(400, 50));
+		info.setFont(bigFont);
 		panel.add(info);
 		modeSelector = new JComboBox<String>(getModes());
 		modeSelector.setPreferredSize(new Dimension(400, 50));
 		panel.add(modeSelector);
+		panel.setBackground(new Color(0x99CCFF));
 		continueButton = new JButton("Continue");
 		continueButton.setPreferredSize(new Dimension(200,50));
 		continueButton.addActionListener(new ActionListener() {
