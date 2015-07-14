@@ -46,30 +46,33 @@ public class Data {
 			logdata = createLogfile();
 		}
 	}
-public void writeLogfile() {
-	PrintWriter writer=null;
-	try {
-		writer = new PrintWriter(logfile);
-		}
-		catch (FileNotFoundException e) {
-			System.out.println("Error occured while trying to create an updatelog");
+
+	public void writeLogfile() {
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(logfile);
+		} catch (FileNotFoundException e) {
+			System.out
+					.println("Error occured while trying to create an updatelog");
 			System.exit(1);
 		}
-	for(int i=0;i<logdata[0].length;i++) {
-		for(int j=0;j<logdata.length;j++) {
-			writer.println(i+","+j+":"+logdata[i][j]);
+		for (int i = 0; i < logdata[0].length; i++) {
+			for (int j = 0; j < logdata.length; j++) {
+				writer.println(i + "," + j + ":" + logdata[i][j]);
+			}
 		}
 	}
-}
+
 	public File getZip(int index) {
 		return folder.listFiles()[index];
 	}
-	public File getZip(int x,int y) {
-		File zip=new File(folder.getAbsolutePath()+"/"+x+","+y+".zip");
+
+	public File getZip(int x, int y) {
+		File zip = new File(folder.getAbsolutePath() + "/" + x + "," + y
+				+ ".zip");
 		if (zip.exists()) {
 			return zip;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -94,9 +97,9 @@ public void writeLogfile() {
 	public long getTimestamp(int x, int y) {
 		return logdata[x + (mapSizeChunks / 2)][y + (mapSizeChunks / 2)];
 	}
-	
-	public void updateTimestamp(int x,int y,long time) {
-		logdata[x + (mapSizeChunks / 2)][y + (mapSizeChunks / 2)]=time;
+
+	public void updateTimestamp(int x, int y, long time) {
+		logdata[x + (mapSizeChunks / 2)][y + (mapSizeChunks / 2)] = time;
 	}
 
 	/**
@@ -109,33 +112,36 @@ public void writeLogfile() {
 		long[][] readData = new long[mapSizeChunks][mapSizeChunks];
 		for (int i = 0; i < getDataLength(); i++) {
 			File f = getZip(i);
-			byte []data=null;
+			byte[] data = null;
 			try {
-			data = Utilities.dezipFileToByteArray(f); }
-			catch(IOException e) {
-				System.out.println("Error,while trying to unzip a file to create an updatelog");
-				e.printStackTrace();
-				System.exit(1);
-			}
- int xoffset = Integer
-					.parseInt((f.getName().split("\\.")[0]).split(",")[0]);
-			int yoffset = Integer
-					.parseInt(f.getName().split("\\.")[0].split(",")[1]);
+				data = Utilities.dezipFileToByteArray(f);
 
-			for (int a = 0; a < 256 * 256 * 17; a += 17 * 256 * 16) {
-				for (int k = a; k != a && k % (256 * 17) != 0; k += 17 * 16) {
-					if (data[a + k + 2] != 0) { // the item id of the block
+				int xoffset = Integer.parseInt((f.getName().split("\\.")[0])
+						.split(",")[0]);
+				int yoffset = Integer.parseInt(f.getName().split("\\.")[0]
+						.split(",")[1]);
+
+				for (int a = 0; a < 256 * 256 * 17; a += 17 * 256 * 16) {
+					for (int k = a; k < a + 256 * 17; k += 17 * 16) {
+						if (data[k + 2] != 0) { // the item id of the block
 												// read, if this is air (=0) the
 												// chunk was never loaded
-						int pos = a / 17 + k / 17;
-						int x = pos % 256;
-						int y = pos / 256;
-						readData[x + mapSizeChunks / 2 + xoffset * 16][y
-								+ mapSizeChunks / 2 + yoffset * 16] = f
-								.lastModified();
+
+							int y = a / (17 * 256 * 16);
+							int x = (k - a) / (16 * 17);
+							readData[x + mapSizeChunks / 2 + xoffset * 16][y
+									+ mapSizeChunks / 2 + yoffset * 16] = f
+									.lastModified();
+						}
 					}
 				}
 			}
+
+			catch (IOException e) {
+				System.out.println("Whoops, that was no zip");
+				e.printStackTrace();
+			}
+
 		}
 		return readData;
 	}
@@ -146,27 +152,28 @@ public void writeLogfile() {
 	 * @return last updated time of each chunk as an array;
 	 */
 	public long[][] parseLogfile() {
-		long [] [] data=new long [mapSizeChunks] [mapSizeChunks];
-		BufferedReader in=null;
+		long[][] data = new long[mapSizeChunks][mapSizeChunks];
+		BufferedReader in = null;
 		try {
-		in = new BufferedReader(new FileReader(logfile)); }
-		catch (FileNotFoundException e) {
-			System.out.println("Error, while trying to load the filelog for"+folder.getName());
+			in = new BufferedReader(new FileReader(logfile));
+		} catch (FileNotFoundException e) {
+			System.out.println("Error, while trying to load the filelog for"
+					+ folder.getName());
 			System.exit(1);
 		}
 		String line;
 		try {
-		while((line = in.readLine()) != null)
-		{
-		    int x=Integer.parseInt(line.split(":") [0].split(",") [0]);
-		    int y=Integer.parseInt(line.split(":") [0].split(",") [1]);
-		    long time=Long.parseLong(line.split(":")[1]);
-		    data [x] [y]=time;
-		}
-		in.close(); }
-		catch (IOException e) {
-			System.out.println("Error, while trying to close the reader for reading a filelog for"+
-		folder.getName());
+			while ((line = in.readLine()) != null) {
+				int x = Integer.parseInt(line.split(":")[0].split(",")[0]);
+				int y = Integer.parseInt(line.split(":")[0].split(",")[1]);
+				long time = Long.parseLong(line.split(":")[1]);
+				data[x][y] = time;
+			}
+			in.close();
+		} catch (IOException e) {
+			System.out
+					.println("Error, while trying to close the reader for reading a filelog for"
+							+ folder.getName());
 			System.exit(1);
 		}
 		return data;

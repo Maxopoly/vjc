@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -102,18 +103,15 @@ public class Main {
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			returnValue = chooser.showOpenDialog(null);
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				sourcefile = chooser.getSelectedFile();
+				sourcefolder = chooser.getSelectedFile();
 			}
-			if (jtvc.convert(sourcefolder)) {
+			jtvc.convert(sourcefolder);
 				// TODO success window
 				System.exit(0);
-			} else {
-				// TODO tell them something broke
-				System.exit(1);
-			}
 			break;
 			
 		}
 	}
+	
 
 }

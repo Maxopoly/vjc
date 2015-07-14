@@ -41,7 +41,7 @@ public class VoxelMapMerger {
 					e.printStackTrace();
 					System.exit(1);
 				}
-				byte[] mergedData = new byte[currentData.length];
+				byte[] mergedData = new byte[256*256*17];
 				int xoffset = Integer.parseInt(zip.getName().split("\\.")[0]
 						.split(",")[0]) * 16; // Chunk offset relative to 0,0,
 												// based on which package is
@@ -61,7 +61,7 @@ public class VoxelMapMerger {
 						long time = current.getTimestamp(x + xoffset, y
 								+ yoffset);
 						target.updateTimestamp(x + xoffset, y + yoffset, time);
-						copyChunk(a, currentData, mergedData);
+						copyChunk(a, currentData, mergedData);;  //TODO
 					}
 				} else {
 					try {
@@ -94,7 +94,7 @@ public class VoxelMapMerger {
 						}
 					}
 				}
-				File data = new File("data");
+				File data = new File(destinationFolder.getAbsolutePath()+"/data");
 				try {
 					data = Utilities.createFileFromByteArray(mergedData, data);
 				} catch (IOException e) {
@@ -117,27 +117,25 @@ public class VoxelMapMerger {
 			}
 		}
 		logger.closeLogger();
+		target.writeLogfile();
 	}
 
-	public void copyChunk(int c, byte[] sourcedata, byte[] targetdata) {
-		if ((c / 16) * 16 * (256 * 17) + (c % 16) * 16 * 17 != 0) {
-			for (int cy = 0; cy < 16; cy++) {
-				// x
-				for (int cx = 0; cx < 16; cx++) {
-					// get block at that xy
-					for (int x = 0; x < 17; x++) {
-						int btr = ((c / 16) * 16 * (256 * 17))
-								+ (cy * (17 * 16)) + (cx * 17) + (c % 16) * 16
-								* 17;
-						// int btw = cy * (16*17) + x;
-
-						targetdata[btr] = sourcedata[btr];
-					}
-
+	public void copyChunk(int i, byte[] sourcedata, byte[] targetdata) {
+		int x=i%16;
+		int y=i/16;
+		int start=x*16*17+y*16*256*17;
+		if (sourcedata[start+2]!=0) {
+			
+				for(int b=start;b<start+256*16*17;b+=256*17) {
+					for(int a=b;a<b+16*17;a++) {
+					targetdata[a]=sourcedata[a];
 				}
-			}
+				
+				
 
+			}
 		}
+	}
 
 	}
-}
+
