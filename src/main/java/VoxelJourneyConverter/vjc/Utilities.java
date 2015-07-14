@@ -59,7 +59,7 @@ public class Utilities {
 							"\\.")[0].split(",")[1]);
 					try {
 						img = ImageIO.read(fileEntry);
-						pics[x + 30][y + 30] = img;
+						pics[x + 60][y + 60] = img;
 					} catch (IOException e) {
 						System.out.println("Failed to read "
 								+ fileEntry.getName());

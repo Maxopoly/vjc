@@ -50,18 +50,17 @@ public class JourneyToVoxelConverter {
 	}
 
 	public void createVoxeldata(BufferedImage img, int x, int y, File folder) {
-		// img=adjust(img);
 		File data = new File("data");
 		int compared;
 		Colour white = new Colour(0, (byte) 0, (byte) 0);
 		byte[] readData = new byte[256 * 256 * 17];
-		for (int j = 0; j< img.getWidth(); j++) {
-			for (int i = 0; i < img.getHeight(); i++) {
-				int pixel = img.getRGB(i, j);
+		for (int i = 0; i< img.getWidth(); i++) {
+			for (int j = 0; j < img.getHeight(); j++) {
+				int pixel = img.getRGB(j, i);
 				Colour temp = new Colour(pixel);
 				Colour bestFind = null;
 				compared = 256 * 256 * 256;
-				if (img.getRGB(i, j) == 0) {
+				if (pixel == 0) {
 					bestFind = white;
 					compared = 0;
 				} else {
@@ -101,8 +100,8 @@ public class JourneyToVoxelConverter {
 					.println("Error while trying to create a file of the byte array");
 			e.printStackTrace();
 		}
-		File zip = new File(folder.getAbsolutePath() + "\\" + String.valueOf(x+60)
-				+ "," + String.valueOf(y+60) + ".zip");
+		File zip = new File(folder.getAbsolutePath() + "\\" + String.valueOf(x)
+				+ "," + String.valueOf(y) + ".zip");
 		try {
 			Utilities.createZip(data, zip);
 		} catch (FileNotFoundException e) {
@@ -131,28 +130,6 @@ public class JourneyToVoxelConverter {
 			colours[i] = t;
 		}
 		return colours;
-	}
-
-	/*
-	 * Turns the image right and then mirrors it at the north-south axis, this
-	 * is needed so they are facing in the right direction, dont even ask me why
-	 */
-
-	public BufferedImage adjust(BufferedImage img) {
-		BufferedImage result = new BufferedImage(img.getWidth(),
-				img.getHeight(), img.getType());
-		for (int i = 0; i < img.getWidth(); i++) {
-			for (int j = 0; j < img.getHeight(); j++) {
-				result.setRGB(img.getWidth() - j - 1, i, img.getRGB(i, j)); // turn
-																			// right
-			}
-		}
-		for (int i = 0; i < result.getWidth(); i++) {
-			for (int j = 0; j < result.getHeight(); j++) {
-				img.setRGB(result.getWidth() - i - 1, j, result.getRGB(i, j)); // mirror
-			}
-		}
-		return img;
 	}
 
 }
