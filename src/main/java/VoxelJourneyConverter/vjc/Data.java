@@ -64,7 +64,15 @@ public class Data {
 	}
 
 	public File getZip(int index) {
-		return folder.listFiles()[index];
+		try {
+		if(folder.listFiles()[index].getName().split("\\.")[1].equals("zip")) {
+		return folder.listFiles()[index]; }
+		else {
+			return null;
+		}}
+		catch (ArrayIndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 
 	public File getZip(int x, int y) {

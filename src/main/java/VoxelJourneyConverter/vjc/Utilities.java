@@ -46,33 +46,40 @@ public class Utilities {
 
 	}
 
-	public static BufferedImage[][] getImages(File folder) {
-		BufferedImage[][] pics = new BufferedImage[120][120]; // mapdiameter/512
+	public static File[][] getImages(File folder) {
+		File[][] pics = new File[120][120]; // mapdiameter/512
 		for (final File fileEntry : folder.listFiles()) {
 			try {
+				File f=fileEntry;
 				if (!fileEntry.isDirectory() && fileEntry.getName().split("\\.")[1].equals("png")) {
-
-					BufferedImage img = null;
 					int x = Integer.parseInt(fileEntry.getName().split(
 							"\\.")[0].split(",")[0]);
 					int y = Integer.parseInt(fileEntry.getName().split(
 							"\\.")[0].split(",")[1]);
-					try {
-						img = ImageIO.read(fileEntry);
-						pics[x + 60][y + 60] = img;
-					} catch (IOException e) {
-						System.out.println("Failed to read "
-								+ fileEntry.getName());
-						pics[x + 60][y + 60] = null;
+						pics[x + 60][y + 60] = f;
 					}
 				}
-			}
-
+			
+	
 			catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("Failed to read " + fileEntry.getName());
 			}
 		}
 		return pics;
+	}
+	public static BufferedImage readImage(File file) {
+		if (file==null) {
+			return null;
+		}
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(file);
+		} catch (IOException e) {
+			System.out.println("Failed to read "
+					+ file.getName());
+			img = null;
+		}
+		return img;
 	}
 
 	public static LinkedList<File> getSubFolders(File folder) {

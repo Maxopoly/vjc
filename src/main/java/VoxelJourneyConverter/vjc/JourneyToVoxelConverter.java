@@ -19,10 +19,10 @@ public class JourneyToVoxelConverter {
 		coloursString = Utilities.readTextfile(convertingData);
 		colours = parseColours(coloursString);
 		destinationFolder.mkdirs();
-		BufferedImage images[][] = Utilities.getImages(sourceFolder);
+		File images[][] = Utilities.getImages(sourceFolder);
 		for (int i = 0; i < images[0].length; i++) {
 			for (int j = 0; j < images.length; j++) {
-				BufferedImage img = images[i][j];
+				BufferedImage img = Utilities.readImage(images[i][j]);
 				if (img != null) {
 					int a = (i - 60) * 2;
 					int b = (j - 60) * 2;
@@ -111,6 +111,7 @@ public class JourneyToVoxelConverter {
 			System.out.println("Error while creating a zip");
 			e.printStackTrace();
 		}
+		zip.setLastModified(1234567898765l); //to clearly distinguish converted data based on the file already
 	}
 
 	public Colour[] parseColours(LinkedList<String> list) {
