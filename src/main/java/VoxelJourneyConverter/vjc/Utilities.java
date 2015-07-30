@@ -50,36 +50,48 @@ public class Utilities {
 		File[][] pics = new File[120][120]; // mapdiameter/512
 		for (final File fileEntry : folder.listFiles()) {
 			try {
-				File f=fileEntry;
-				if (!fileEntry.isDirectory() && fileEntry.getName().split("\\.")[1].equals("png")) {
-					int x = Integer.parseInt(fileEntry.getName().split(
-							"\\.")[0].split(",")[0]);
-					int y = Integer.parseInt(fileEntry.getName().split(
-							"\\.")[0].split(",")[1]);
-						pics[x + 60][y + 60] = f;
-					}
+				File f = fileEntry;
+				if (!fileEntry.isDirectory()
+						&& fileEntry.getName().split("\\.")[1].equals("png")) {
+					int x = Integer
+							.parseInt(fileEntry.getName().split("\\.")[0]
+									.split(",")[0]);
+					int y = Integer
+							.parseInt(fileEntry.getName().split("\\.")[0]
+									.split(",")[1]);
+					pics[x + 60][y + 60] = f;
 				}
-			
-	
+			}
+
 			catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("Failed to read " + fileEntry.getName());
 			}
 		}
 		return pics;
 	}
+
 	public static BufferedImage readImage(File file) {
-		if (file==null) {
+		if (file == null) {
 			return null;
 		}
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(file);
 		} catch (IOException e) {
-			System.out.println("Failed to read "
-					+ file.getName());
+			System.out.println("Failed to read " + file.getName());
 			img = null;
+			e.printStackTrace();
 		}
 		return img;
+	}
+
+	public static void saveImage(BufferedImage img, File file) {
+		try {
+			ImageIO.write(img, "png", file);
+		} catch (IOException e) {
+			System.out.println("Failed to save an image");
+			e.printStackTrace();
+		}
 	}
 
 	public static LinkedList<File> getSubFolders(File folder) {

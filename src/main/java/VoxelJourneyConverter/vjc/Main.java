@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Main {
 	static JFrame frame;
@@ -21,6 +22,12 @@ public class Main {
 	static JComboBox<String> modeSelector;
 	static JLabel info;
 	static JButton continueButton;
+	static Font bigFont;
+	static Font mediumFont;
+	static JTextField sizeField;
+	static JTextField diameterField;
+	static JTextField lineField;
+	static File selected;
 
 	public static void main(String[] args) {
 		setupGUI();
@@ -29,9 +36,11 @@ public class Main {
 	public static void setupGUI() {
 		
 		// yes this looks horrible, but it's just supposed to work at this point, not to look pretty
-		Font bigFont=new Font("big",Font.BOLD,25);
+		bigFont=new Font("big",Font.BOLD,25);
+		mediumFont=new Font("medium",Font.LAYOUT_LEFT_TO_RIGHT,20);
 		frame = new JFrame("Mapdataconverter");
 		frame.setSize(600, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		panel = new JPanel();
 		panel.setLayout(new FlowLayout());
 		info = new JLabel("What do you want to do?");
@@ -57,7 +66,7 @@ public class Main {
 	public static String[] getModes() {
 		String[] modes = { "Convert Voxelmap data into Journeymap data",
 				"Convert Journeymap data into Voxelmap data",
-				"Merge Voxelmap data of multiple people" };
+				"Merge Voxelmap data of multiple people","Print raildata from txapu"};
 		return modes;
 	}
 
@@ -113,6 +122,53 @@ public class Main {
 				// TODO success window
 				System.exit(0);
 			break;
+		case "Print raildata from txapu":
+			final RailDrawer rd=new RailDrawer();
+			chooser = new JFileChooser();
+			chooser.setDialogTitle("Please choose location of the rail data file");
+			returnValue = chooser.showOpenDialog(null);
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				selected = chooser.getSelectedFile();
+			} 
+			panel.removeAll();
+			panel.setLayout(new FlowLayout());
+			JLabel sizeInfo=new JLabel();
+			sizeInfo.setText("Enter the size of the image in pixel   ");
+			sizeInfo.setFont(mediumFont);
+			panel.add(sizeInfo);
+			sizeField=new JTextField();
+			sizeField.setText("500");
+			sizeField.setPreferredSize(new Dimension(200,40));
+			panel.add(sizeField);
+			JLabel diameterInfo=new JLabel();
+			diameterInfo.setText("Enter the radius of the map in pixel");  //TODO change variable names, needs to be all radius
+			diameterInfo.setFont(mediumFont);
+			panel.add(diameterInfo);
+			diameterField=new JTextField();
+			diameterField.setText("400");
+			diameterField.setPreferredSize(new Dimension(200,40));
+			panel.add(diameterField);
+			JLabel lineInfo=new JLabel();
+			lineInfo.setText("Enter the thickness of the lines");
+			lineInfo.setFont(mediumFont);
+			panel.add(lineInfo);
+			lineField=new JTextField();
+			lineField.setText("4");
+			lineField.setPreferredSize(new Dimension(200,40));
+			panel.add(lineField);
+			continueButton = new JButton("Continue");
+			continueButton.setPreferredSize(new Dimension(200,50));
+			continueButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					rd.draw(sizeField.getText(),diameterField.getText(),lineField.getText(),selected);
+					System.exit(0);
+				}
+			});
+			panel.add(continueButton);
+			frame.revalidate();
+			frame.repaint();
+			
+			
 			
 		}
 	}
